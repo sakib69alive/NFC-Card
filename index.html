@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="min-h-screen bg-[#F3F1EC] text-[#1C1A17] antialiased selection:bg-[#8C7355] selection:text-white">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#F8F7F4" />
+  <meta name="theme-color" content="#F6F2EA" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>Digital Business Card</title>
@@ -59,130 +59,101 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
-    .selectable {
-      user-select: text;
-    }
-    .bg-grain {
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
-    }
-    .modal-backdrop {
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .modal-card {
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    :root{--bg:#F6F2EA;--ivory:#1E1B16;--soft:#4A4439;--mute:#6F675A;--dim:#9A917F;--line:rgba(30,27,22,.10);--brass:#8A6A42;--ink:#F6F2EA;--ease:cubic-bezier(.22,1,.36,1)}
+    *{-webkit-tap-highlight-color:transparent}
+    html{background:var(--bg);color-scheme:light}
+    body{margin:0;min-height:100vh;min-height:100dvh;color:var(--ivory);overflow-x:hidden;-webkit-font-smoothing:antialiased;
+      background:radial-gradient(120% 55% at 50% -6%,#FFFFFF,transparent 65%),radial-gradient(90% 45% at 100% 75%,rgba(200,167,123,.14),transparent 70%),var(--bg)}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+    .selectable{user-select:text;-webkit-user-select:text}
+    a,button{touch-action:manipulation}
+    a:focus-visible,button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 
-    :root { color-scheme: light; }
-    html { min-height: 100%; background: #e9e5dc; }
-    body {
-      min-height: 100vh;
-      min-height: 100svh;
-      padding: max(0px, env(safe-area-inset-top)) 0 max(0px, env(safe-area-inset-bottom));
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(190, 168, 132, .18), transparent 34rem),
-        linear-gradient(180deg, #f1eee8 0%, #e8e4dc 100%);
-    }
-    main {
-      overflow: hidden;
-      max-width: 480px !important;
-      min-height: 100vh;
-      min-height: 100svh;
-      background: #fbfaf7 !important;
-      border: 1px solid rgba(95, 78, 54, .10) !important;
-      border-radius: 0 !important;
-      box-shadow: 0 24px 70px rgba(40, 33, 24, .10) !important;
-    }
-    main > div:first-child > div:first-child { height: clamp(190px, 27svh, 250px) !important; }
-    main > div:first-child > div:first-child img { filter: grayscale(1) contrast(1.04) brightness(.83) !important; }
-    main > div:first-child > div:first-child > div { background: linear-gradient(180deg, rgba(22,20,17,.12), rgba(22,20,17,.03) 48%, #fbfaf7 100%) !important; }
-    main > div:first-child > div:nth-child(2) { top: max(18px, env(safe-area-inset-top)) !important; right: 20px !important; }
-    main > div:first-child > div:nth-child(2) button {
-      width: 44px; height: 44px; display: grid; place-items: center; padding: 0 !important;
-      border-radius: 50% !important; background: rgba(251,250,247,.88) !important;
-      border-color: rgba(255,255,255,.72) !important; box-shadow: 0 6px 20px rgba(0,0,0,.10) !important;
-    }
-    main > div:first-child > div:nth-child(3) {
-      min-height: 96px; margin-top: -77px !important; padding: 0 22px !important;
-      display: flex; flex-direction: column; align-items: center !important; justify-content: flex-end !important;
-    }
-    main > div:first-child > div:nth-child(3) > div:first-child > div:first-child {
-      width: 132px !important; height: 132px !important; padding: 4px !important;
-      border-radius: 50% !important; background: #fbfaf7 !important;
-      border: 1px solid rgba(140,115,85,.32) !important; box-shadow: 0 12px 30px rgba(44,36,27,.15) !important;
-    }
-    main > div:first-child > div:nth-child(3) > div:first-child img { border-radius: 50% !important; object-position: center 38%; }
-    main > div:first-child > div:nth-child(3) > div:first-child > div:last-child { right: 9px !important; bottom: 9px !important; }
-    main > div:first-child > div:nth-child(3) > button {
-      position: absolute; right: 22px; bottom: 8px; min-height: 42px; margin: 0 !important;
-      padding: 0 13px !important; border-radius: 999px !important; background: #f3f0ea !important;
-      font-size: 10px !important; letter-spacing: .12em !important;
-    }
-    main > div:nth-child(2) {
-      margin-top: 19px !important; padding: 0 26px !important; text-align: center;
-      animation: identity-in .48s cubic-bezier(.2,.75,.25,1) both;
-    }
-    #user-fullname { font-size: clamp(32px, 9vw, 40px) !important; line-height: 1.03 !important; letter-spacing: -.035em !important; }
-    main > div:nth-child(2) > div:first-child { justify-content: center; gap: 7px !important; }
-    main > div:nth-child(2) > div:first-child > span { width: 17px; height: 17px; }
-    #user-profession { margin-top: 9px !important; font-size: 10px !important; letter-spacing: .17em !important; color: #806747 !important; }
-    #meta-info-container { justify-content: center; margin-top: 10px !important; font-size: 12px !important; color: #797367 !important; }
-    #user-bio {
-      max-width: 350px; margin: 18px auto 0 !important; padding: 0 !important; border: 0 !important;
-      font-size: 13px !important; line-height: 1.7 !important; color: #68645c !important;
-    }
-    main > div:nth-child(3) { margin-top: 23px !important; padding: 0 22px !important; }
-    main > div:nth-child(3) > button {
-      min-height: 54px; border-radius: 16px !important; background: #28251f !important;
-      box-shadow: 0 10px 22px rgba(40,37,31,.16) !important; font-size: 11px !important; letter-spacing: .14em !important;
-    }
-    main > div:nth-child(3) > div { gap: 9px !important; padding-top: 2px !important; }
-    #btn-call, #btn-whatsapp, #btn-email {
-      min-height: 82px; border-radius: 17px !important; border-color: #e8e4dc !important;
-      background: #fff !important; box-shadow: 0 3px 12px rgba(32,28,22,.035) !important;
-    }
-    #btn-call > div, #btn-whatsapp > div, #btn-email > div { background: #f4f1eb !important; border-radius: 11px !important; }
-    main > div:nth-child(4) { margin-top: 28px !important; margin-bottom: 25px !important; padding: 0 22px !important; }
-    main > div:nth-child(4) h2 { padding: 0 2px 10px !important; font-size: 10px !important; letter-spacing: .17em !important; color: #827a6b !important; }
-    #links-container { gap: 9px !important; }
-    #links-container > a {
-      min-height: 68px; padding: 11px 13px !important; border-radius: 16px !important;
-      border-color: #e9e5dd !important; background: rgba(255,255,255,.88) !important;
-      box-shadow: 0 3px 12px rgba(32,28,22,.035) !important;
-    }
-    #links-container > a > div:first-child { gap: 12px !important; }
-    #links-container > a > div:first-child > div:first-child { padding: 10px !important; border-radius: 12px !important; background: #f4f1eb !important; }
-    #links-container > a > div:first-child svg { width: 18px !important; height: 18px !important; }
-    #links-container > a > div:first-child > div:last-child > div:first-child { font-size: 13px !important; }
-    #links-container > a > div:first-child > div:last-child > div:last-child { margin-top: 2px; font-size: 11px !important; }
-    main footer { padding: 18px 12px max(18px, env(safe-area-inset-bottom)) !important; background: #f6f4ef !important; }
-    button, a { touch-action: manipulation; }
-    button:active, a:active { transform: scale(.985); transition-duration: 120ms !important; }
-    #qr-modal, #share-modal { padding-bottom: env(safe-area-inset-bottom); }
-    #qr-modal-content, #share-modal-content { box-shadow: 0 20px 55px rgba(22,19,15,.2) !important; }
-    @keyframes identity-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    @media (min-width: 600px) {
-      body { padding: 28px 16px !important; }
-      main { min-height: 0 !important; border-radius: 28px !important; }
-    }
-    @media (max-height: 740px) and (max-width: 599px) {
-      main > div:first-child > div:first-child { height: 176px !important; }
-      main > div:first-child > div:nth-child(3) { margin-top: -70px !important; }
-      main > div:first-child > div:nth-child(3) > div:first-child > div:first-child { width: 118px !important; height: 118px !important; }
-      main > div:nth-child(2) { margin-top: 14px !important; }
-      #user-bio { margin-top: 13px !important; }
-      main > div:nth-child(3) { margin-top: 17px !important; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-    }
+    .card{position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+      padding:calc(env(safe-area-inset-top,0px) + 14px) max(22px,env(safe-area-inset-right,0px)) 0 max(22px,env(safe-area-inset-left,0px))}
+    .backdrop{position:absolute;top:0;left:0;right:0;height:min(58vh,430px);z-index:-1;overflow:hidden;pointer-events:none;
+      -webkit-mask-image:linear-gradient(#000 30%,transparent 100%);mask-image:linear-gradient(#000 30%,transparent 100%)}
+    .backdrop img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.30;filter:grayscale(1) sepia(.25) brightness(1.05) contrast(.95);animation:fade .8s ease both}
+
+    .top{display:flex;justify-content:space-between;align-items:center}
+    .chip,.round{height:42px;display:inline-flex;align-items:center;justify-content:center;color:var(--ivory);background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;transition:transform .12s var(--ease),background .2s}
+    .chip{gap:8px;padding:0 15px 0 12px;font-size:13px;font-weight:500}
+    .round{width:42px}
+    .chip .ic{color:var(--brass)}
+    .chip:active,.round:active{transform:scale(.95);background:rgba(30,27,22,.12)}
+    .ic{width:18px;height:18px;flex:none}
+
+    .avatar{position:relative;width:128px;height:128px;margin-top:52px;padding:4px;border-radius:34px;background:var(--bg);
+      box-shadow:0 0 0 1px rgba(200,167,123,.55),0 26px 40px -18px rgba(70,50,25,.30)}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:30px;background:#E9E3D6}
+    .live{position:absolute;right:5px;bottom:5px;width:15px;height:15px;border-radius:50%;background:#2f9e6b;border:3px solid var(--bg)}
+    .idrow{display:flex;align-items:center;gap:10px;margin-top:24px}
+    .name{margin:0;min-width:0;font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(38px,11.6vw,52px);line-height:1;letter-spacing:-.02em;color:var(--ivory);text-wrap:balance}
+    .vbadge{flex:none;color:var(--brass);display:inline-flex}
+    .vbadge svg{width:20px;height:20px}
+    .role{margin:12px 0 0;font-size:14px;font-weight:500;letter-spacing:.02em;color:var(--brass)}
+    .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px;font-size:13px;color:var(--mute)}
+    .meta a{display:inline-flex;align-items:center;gap:6px;color:var(--mute)}
+    .meta svg{width:14px;height:14px;color:var(--dim);flex:none}
+    .meta>div,.meta>a{gap:6px}
+    #meta-bullet{color:var(--dim)}
+    .bio{margin:18px 0 0;font-size:15px;line-height:1.65;color:var(--soft)}
+
+    .actions{margin-top:26px;display:grid;gap:12px}
+    .cta{height:54px;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:16px;background:var(--ivory);color:var(--ink);font:600 15px/1 "Plus Jakarta Sans",sans-serif;letter-spacing:.01em;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 14px 26px -12px rgba(30,27,22,.45);transition:transform .12s var(--ease),filter .2s}
+    .cta .ic{width:20px;height:20px;color:#D9BD94}
+    .cta:active{transform:scale(.985);filter:brightness(.93)}
+    .surface{background:linear-gradient(180deg,#FFFFFF,rgba(255,255,255,.72));border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 18px 30px -22px rgba(70,50,25,.22)}
+    .quick{display:grid;grid-template-columns:repeat(3,1fr)}
+    .quick a{display:flex;flex-direction:column;align-items:center;gap:8px;padding:17px 4px 15px;font-size:12.5px;font-weight:500;color:var(--ivory);transition:background .2s,transform .12s var(--ease)}
+    .quick a+a{border-left:1px solid var(--line)}
+    .quick .ic{width:22px;height:22px}
+    .quick a:active{background:rgba(30,27,22,.08)}
+    .quick a:active .ic{transform:scale(.92)}
+    .quick .ic{transition:transform .12s var(--ease)}
+
+    .links{margin-top:28px}
+    .label{margin:0 4px 10px;font-size:13px;font-weight:500;letter-spacing:.02em;color:var(--mute)}
+    .link-row{display:flex;align-items:center;gap:14px;min-height:64px;padding:12px 16px;color:var(--ivory);cursor:pointer;transition:background .2s}
+    .link-row+.link-row{border-top:1px solid var(--line)}
+    .link-row:active{background:rgba(30,27,22,.08)}
+    .link-row .ico{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;background:rgba(30,27,22,.06);border:1px solid var(--line)}
+    .link-row .ico svg{width:20px;height:20px;color:var(--ivory)}
+    .link-row .txt{flex:1;min-width:0}
+    .link-row b{display:block;font-size:15px;font-weight:600;line-height:1.25}
+    .link-row small{display:block;margin-top:2px;font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .link-row .chev{width:16px;height:16px;flex:none;color:var(--dim);transition:transform .15s var(--ease),color .2s}
+    .link-row:active .chev{transform:translateX(3px);color:var(--brass)}
+
+    .foot{margin-top:auto;padding:34px 0 calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;justify-content:center;align-items:center;gap:8px;font-size:12px;letter-spacing:.04em;color:var(--dim)}
+    .foot i{width:5px;height:5px;border-radius:50%;background:var(--brass)}
+
+    .rv{animation:rv .42s var(--ease) both;animation-delay:calc(var(--i,0)*55ms + 60ms)}
+    @keyframes rv{from{opacity:0;transform:translateY(10px)}}
+    @keyframes fade{from{opacity:0}}
+
+    #toast{top:calc(env(safe-area-inset-top,0px) + 12px)}
+    #toast>div{background:#1E1B16;border-color:rgba(200,167,123,.35)}
+    #qr-modal,#share-modal{background:rgba(40,32,22,.45)}
+    #qr-modal-content,#share-modal-content{background:#FCFAF5;border-color:var(--line)}
+    #share-modal-content{padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))}
+    .modal-card .text-stone-900,.modal-card .text-stone-800,.modal-card .text-stone-700{color:var(--ivory)}
+    .modal-card .text-stone-500,.modal-card .text-stone-400{color:var(--mute)}
+    .modal-card .bg-stone-100,.modal-card .bg-stone-300{background:rgba(30,27,22,.08)}
+    .modal-card button{background:rgba(30,27,22,.06);border-color:var(--line);color:var(--ivory)}
+    .modal-card button:hover,.modal-card button:active{background:rgba(30,27,22,.12)}
+    .modal-backdrop{transition:opacity .25s cubic-bezier(.16,1,.3,1)}
+    .modal-card{transition:transform .25s cubic-bezier(.16,1,.3,1),opacity .25s cubic-bezier(.16,1,.3,1)}
+
+    @media (max-height:700px){.avatar{width:108px;height:108px;margin-top:34px;border-radius:30px}.avatar img{border-radius:26px}.idrow{margin-top:18px}.bio{margin-top:14px}.actions{margin-top:20px}}
+    @media (max-width:340px){.card{padding-left:18px;padding-right:18px}.bio{font-size:14px}}
+    @media (prefers-reduced-motion:reduce){.rv,.backdrop img{animation:none}*{transition-duration:.01ms!important}}
   </style>
 </head>
 
-<body class="min-h-screen bg-[#F3F1EC] font-sans text-[#1C1A17] flex flex-col items-center bg-grain py-0 sm:py-8 px-0 sm:px-4 antialiased overflow-y-auto">
-
+<body>
   <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none w-[90%] max-w-xs">
     <div class="bg-[#1C1A17] text-[#FAF9F6] text-xs font-medium px-4 py-3 rounded-full shadow-float border border-stone-800 flex items-center justify-center space-x-2.5 text-center">
       <span class="w-1.5 h-1.5 rounded-full bg-bronze-400"></span>
@@ -190,115 +161,50 @@
     </div>
   </div>
 
-  <main class="w-full max-w-[440px] bg-[#FAF9F6] sm:rounded-[32px] sm:border sm:border-stone-200/80 shadow-card flex flex-col relative border-b sm:border-b-stone-200 min-h-screen sm:min-h-0">
+  <main class="card">
+    <div class="backdrop" aria-hidden="true"><img id="cover-img" src="" alt="" /></div>
 
-    <div class="relative w-full">
-      <div class="h-40 sm:h-44 w-full bg-stone-200 overflow-hidden relative">
-        <img id="cover-img" src="" alt="Cover Banner" class="w-full h-full object-cover object-center filter grayscale contrast-[1.05] brightness-[0.92] transition-opacity duration-500 opacity-90" />
-        <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-[#FAF9F6]"></div>
+    <header class="top rv" style="--i:0">
+      <button class="chip" onclick="openQrModal()"><svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg><span>QR Code</span></button>
+      <button class="round" onclick="openShareModal()" aria-label="Share Profile"><svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg></button>
+    </header>
+
+    <section>
+      <div class="avatar rv" style="--i:1">
+        <img id="profile-avatar" src="" alt="Sakib Al Hasan"  onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%238C8475\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>';" />
+        <i class="live" title="Available"></i>
       </div>
-
-      <!-- Action Overlay -->
-      <div class="absolute top-4 right-4 z-20 flex items-center space-x-2">
-        <button onclick="openShareModal()" class="p-2.5 rounded-full bg-white/80 backdrop-blur-md border border-stone-200/80 text-stone-800 hover:text-stone-950 hover:bg-white active:scale-95 transition-all shadow-subtle" aria-label="Share Profile">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-        </button>
+      <div class="idrow rv" style="--i:2">
+        <h1 id="user-fullname" class="name selectable"></h1>
+        <span class="vbadge" title="Verified Profile"><svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg></span>
       </div>
-
-      <!-- Avatar & QR Trigger -->
-      <div class="px-6 -mt-16 flex justify-between items-end relative z-10">
-        <div class="relative">
-          <div class="w-28 h-28 sm:w-30 sm:h-30 rounded-2xl overflow-hidden p-1 bg-[#FAF9F6] border border-stone-200/90 shadow-md">
-            <img id="profile-avatar" src="" alt="Sakib Al Hasan" class="w-full h-full object-cover rounded-xl bg-stone-100 filter contrast-[1.02]" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%238C8475\' viewBox=\'0 0 24 24\'><path d=\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\'/></svg>';" />
-          </div>
-          <div class="absolute bottom-2 right-2 w-3.5 h-3.5 bg-emerald-600 rounded-full border-2 border-[#FAF9F6]" title="Available"></div>
-        </div>
-
-        <button onclick="openQrModal()" class="mb-1 py-2 px-3.5 rounded-xl bg-stone-100 hover:bg-stone-200/70 border border-stone-200 text-stone-800 text-[11px] font-semibold tracking-wide uppercase transition-colors flex items-center space-x-1.5 shadow-subtle">
-          <svg class="w-3.5 h-3.5 text-bronze-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-          <span>QR Code</span>
-        </button>
+      <p id="user-profession" class="role selectable rv" style="--i:3"></p>
+      <div id="meta-info-container" class="meta rv" style="--i:3">
+        <a id="company-link" href="#" target="_blank" rel="noopener" class="hidden"><svg class="" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span id="user-company" class="selectable"></span></a>
+        <span id="meta-bullet" class="hidden">•</span>
+        <div id="location-box" class="inline-flex items-center"><svg class="" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span id="user-location" class="selectable"></span></div>
       </div>
-    </div>
+      <p id="user-bio" class="bio selectable rv" style="--i:4"></p>
+    </section>
 
-    <div class="px-6 mt-4">
-      <div class="flex items-center space-x-2">
-        <h1 id="user-fullname" class="text-2xl sm:text-3xl font-serif font-medium text-stone-900 tracking-tight selectable"></h1>
-        <span class="text-bronze-600 inline-flex items-center" title="Verified Profile">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-        </span>
+    <section class="actions rv" style="--i:5">
+      <button class="cta" onclick="downloadVCard()"><svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span>Save to Contacts</span></button>
+      <div class="quick surface">
+        <a id="btn-call" href="#"><svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg><span>Call</span></a>
+        <a id="btn-whatsapp" href="#" target="_blank" rel="noopener"><svg class="ic" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg><span>WhatsApp</span></a>
+        <a id="btn-email" href="#"><svg class="ic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span>Email</span></a>
       </div>
-      
-      <p id="user-profession" class="text-xs font-semibold uppercase tracking-[0.12em] text-bronze-600 mt-1 selectable"></p>
-      
-      <div id="meta-info-container" class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 text-xs text-stone-600 font-medium">
-        <a id="company-link" href="#" target="_blank" rel="noopener" class="hidden inline-flex items-center space-x-1.5 hover:text-stone-900 transition-colors">
-          <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-          <span id="user-company" class="selectable"></span>
-        </a>
-        <span id="meta-bullet" class="hidden text-stone-300">•</span>
-        <div id="location-box" class="inline-flex items-center space-x-1.5">
-          <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          <span id="user-location" class="selectable"></span>
-        </div>
-      </div>
+    </section>
 
-      <p id="user-bio" class="mt-4 text-xs sm:text-sm text-stone-600 leading-relaxed selectable border-l border-bronze-400/50 pl-3 py-0.5 font-normal"></p>
-    </div>
+    <section class="links rv" style="--i:6">
+      <h2 class="label">Connect &amp; Portfolios</h2>
+      <div class="surface" id="links-container"></div>
+    </section>
 
-    <div class="px-6 mt-6 space-y-3">
-      <!-- Save Contact CTA Button -->
-      <button onclick="downloadVCard()" class="w-full py-3.5 px-4 bg-stone-900 hover:bg-stone-800 text-[#FAF9F6] font-medium text-xs tracking-wider uppercase rounded-xl shadow-md active:scale-[0.99] transition-all flex items-center justify-center space-x-2">
-        <svg class="w-4 h-4 text-bronze-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <span>Save to Contacts</span>
-      </button>
-
-      <!-- Quick Contact Actions Grid -->
-      <div class="grid grid-cols-3 gap-2.5 pt-1">
-        <!-- Call -->
-        <a id="btn-call" href="#" class="flex flex-col items-center justify-center py-3 px-2 rounded-xl bg-white border border-stone-200/90 hover:border-bronze-500/40 hover:bg-stone-50/80 active:scale-95 transition-all group shadow-subtle">
-          <div class="p-2 rounded-lg bg-stone-100 group-hover:bg-bronze-100/60 text-stone-700 group-hover:text-bronze-700 transition-colors mb-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-          </div>
-          <span class="text-[11px] font-medium text-stone-700">Call</span>
-        </a>
-
-        <!-- WhatsApp -->
-        <a id="btn-whatsapp" href="#" target="_blank" rel="noopener" class="flex flex-col items-center justify-center py-3 px-2 rounded-xl bg-white border border-stone-200/90 hover:border-bronze-500/40 hover:bg-stone-50/80 active:scale-95 transition-all group shadow-subtle">
-          <div class="p-2 rounded-lg bg-stone-100 group-hover:bg-bronze-100/60 text-stone-700 group-hover:text-bronze-700 transition-colors mb-1">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-          </div>
-          <span class="text-[11px] font-medium text-stone-700">WhatsApp</span>
-        </a>
-
-        <!-- Email -->
-        <a id="btn-email" href="#" class="flex flex-col items-center justify-center py-3 px-2 rounded-xl bg-white border border-stone-200/90 hover:border-bronze-500/40 hover:bg-stone-50/80 active:scale-95 transition-all group shadow-subtle">
-          <div class="p-2 rounded-lg bg-stone-100 group-hover:bg-bronze-100/60 text-stone-700 group-hover:text-bronze-700 transition-colors mb-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          </div>
-          <span class="text-[11px] font-medium text-stone-700">Email</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="px-6 mt-7 mb-8 space-y-3">
-      <h2 class="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-400 px-1">Connect & Portfolios</h2>
-
-      <div class="space-y-2" id="links-container">
-        <!-- Rendered dynamically by script -->
-      </div>
-    </div>
-
-    <footer class="w-full text-center py-5 text-[10px] uppercase tracking-[0.15em] text-stone-400 border-t border-stone-200/60 mt-auto bg-stone-100/50">
-      <div class="flex items-center justify-center space-x-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-bronze-500"></span>
-        <span>NFC Digital Profile</span>
-      </div>
-    </footer>
-
+    <footer class="foot"><i></i><span>NFC Digital Profile</span></footer>
   </main>
 
-  <div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm opacity-0 pointer-events-none modal-backdrop p-4">
+  <div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 opacity-0 pointer-events-none modal-backdrop p-4">
     <div class="bg-[#FAF9F6] border border-stone-200 rounded-2xl p-6 w-full max-w-xs text-center shadow-float relative transform scale-95 modal-card" id="qr-modal-content">
       <button onclick="closeQrModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-800 p-1 rounded-full hover:bg-stone-100 transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -317,7 +223,7 @@
     </div>
   </div>
 
-  <div id="share-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/60 backdrop-blur-sm opacity-0 pointer-events-none modal-backdrop p-0 sm:p-4">
+  <div id="share-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/60 opacity-0 pointer-events-none modal-backdrop p-0 sm:p-4">
     <div class="bg-[#FAF9F6] border-t sm:border border-stone-200 rounded-t-3xl sm:rounded-2xl p-6 w-full max-w-md shadow-float relative transform translate-y-full sm:translate-y-0 modal-card" id="share-modal-content">
       <div class="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-4 sm:hidden"></div>
       <button onclick="closeShareModal()" class="hidden sm:block absolute top-4 right-4 text-stone-400 hover:text-stone-800 p-1 rounded-full hover:bg-stone-100 transition-colors">
@@ -492,19 +398,11 @@
           };
         }
 
-        card.className = "flex items-center justify-between p-3 rounded-xl bg-white border border-stone-200/90 hover:border-bronze-500/40 hover:bg-stone-50/80 active:scale-[0.99] transition-all group shadow-subtle cursor-pointer";
-        
+        card.className = "link-row";
         card.innerHTML = `
-          <div class="flex items-center space-x-3">
-            <div class="p-2 rounded-lg bg-stone-100 group-hover:bg-bronze-100/60 transition-colors">
-              ${link.icon}
-            </div>
-            <div>
-              <div class="text-xs font-semibold text-stone-800 group-hover:text-stone-950 transition-colors">${link.title}</div>
-              <div class="text-[10px] text-stone-500">${link.subtitle}</div>
-            </div>
-          </div>
-          <svg class="w-4 h-4 text-stone-400 group-hover:text-bronze-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7"/></svg>
+          <span class="ico">${link.icon}</span>
+          <span class="txt"><b>${link.title}</b><small>${link.subtitle}</small></span>
+          <svg class="chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7"/></svg>
         `;
         
         linksContainer.appendChild(card);
