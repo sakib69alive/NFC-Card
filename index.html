@@ -49,7 +49,7 @@ html.lenis,html.lenis body{height:auto}
 
 /* ---------- hero ---------- */
 .hero{--pe:max(20%,214px);position:relative;height:100vh;height:100svh;min-height:600px;max-height:1000px;overflow:hidden}
-.photo{position:absolute;z-index:1;top:0;left:0;right:0;height:calc(100% - var(--pe));will-change:transform,opacity}
+.photo{position:absolute;z-index:1;top:0;left:0;right:0;height:calc(100% - var(--pe));will-change:transform,opacity;backface-visibility:hidden;transform:translate3d(0,0,0)}
 .photo-in{position:absolute;top:0;left:0;right:0;bottom:0}
 .photo-in img{display:block;width:100%;height:100%;object-fit:cover;object-position:70% 20%}
 /* crisp, short fade: the photo ends in solid black (no haze) */
@@ -65,7 +65,7 @@ html.lenis,html.lenis body{height:auto}
 
 .id{position:absolute;z-index:3;left:24px;right:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);will-change:transform,opacity}
 .name{margin:0;font:300 clamp(50px,16vw,80px)/.94 var(--serif);letter-spacing:-.028em}
-.ln{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.ln{display:block;overflow:hidden;padding:.16em 0 .1em;margin:-.16em 0 -.1em}
 .ln>span{display:block}
 .facts{margin-top:22px;padding-top:15px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;font-size:13.5px;color:var(--mu)}
 .facts .role{color:rgba(236,230,218,.9)}
@@ -284,10 +284,10 @@ const CONFIG = {
   vcardNote: "Met via Digital Profile",
 
   /* the first tab opens by default.
-     student  = text + save/call/whatsapp/email buttons + your social links (links below)
+     essence  = your own words + save/call/whatsapp/email buttons + your social links (links below)
      business = text + quotes + your business website with its social icons (websites below) */
   roles: [
-    { id: "student",  label: "Student",  text: "Still learning, and happy to be. I treat every subject like a craft: slow enough to understand it properly, curious enough to ask what lies beyond the syllabus." },
+    { id: "student",  label: "Essence",  text: "Student by passion, entrepreneur by ambition. Always learning, exploring new ideas, and building things that turn vision into reality. I believe in growing through experience, staying curious, and creating my own path—one step at a time." },
     { id: "business", label: "Business", text: "I'm drawn to the story behind every business, how a simple idea grows into something people trust. My wish is to build a business of my own that earns that trust and lasts. For now I'm gathering experience, learning by doing, one step at a time." }
   ],
 
@@ -295,6 +295,9 @@ const CONFIG = {
   links: [
     { icon: "instagram", title: "Instagram", sub: "@sakib69alive",   url: "https://www.instagram.com/sakib69alive/" },
     { icon: "facebook",  title: "Facebook",  sub: "@SAKIB69alive",   url: "https://www.facebook.com/SAKIB69alive" },
+    { icon: "x",         title: "X",         sub: "@AlhananSakib",   url: "https://x.com/AlhananSakib" },
+    { icon: "threads",   title: "Threads",   sub: "@sakib69alive",   url: "https://www.threads.com/@sakib69alive" },
+    { icon: "telegram",  title: "Telegram",  sub: "@sakib69alive",   url: "https://t.me/sakib69alive" },
     { icon: "discord",   title: "Discord",   sub: "sakib_al_hasan.", copy: "sakib_al_hasan." },
     { icon: "steam",     title: "Steam",     sub: "Add as friend",   url: "steam://friends/add/765611997316413067" }
   ],
@@ -487,9 +490,9 @@ function select(i, user) {
   if (act.parentNode !== P.pn) P.pn.insertBefore(act, P.lead.nextSibling);
   btns.forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.tabIndex = j === i ? 0 : -1; });
   wEls = panels[i].ws;
-  if (user) { forceLit = true; wEls.forEach(w => { w.style.opacity = 1; }); }   // a tapped tab is always fully readable
   cur = i; moveInd(i);
   requestAnimationFrame(() => remeasure());
+  setTimeout(() => remeasure(), 950);   // once the tab's entrance has settled, re-sync the scroll lighting
 }
 select(0, false);
 addEventListener('resize', () => moveInd(cur));
@@ -627,7 +630,7 @@ Promise.all([wait(fontsReady, 1400), wait(imgReady, 2200)]).then(() => requestAn
 if (!reduce) {
   const photo = $('#photo'), idEl = $('#id'), save = $('#save');
   let vh = innerHeight, leadTop = 0, leadH = 0, saveY = 0;
-  let last = -1, lastP = -1, rz, y0 = scrollY;
+  let last = -1, lastY = -1, lastP = -1, rz, y0 = scrollY;
   const measure = () => {
     vh = innerHeight; const y = scrollY;
     const r = panels[cur].lead.getBoundingClientRect(); leadTop = r.top + y; leadH = r.height;
@@ -638,11 +641,12 @@ if (!reduce) {
 
   function render() {
     const y = Math.max(0, y0);
-    // whole pixels only, so text and photo stay razor sharp while they move
-    photo.style.transform = `translate3d(0,${Math.round(y * .34)}px,0)`;
-    photo.style.opacity = (1 - clamp(y / (vh * .85))).toFixed(3);
-    idEl.style.transform = `translate3d(0,${Math.round(y * .2)}px,0)`;
-    idEl.style.opacity = (1 - clamp(y / (vh * .5))).toFixed(3);
+    // photo and name follow the finger exactly (real scroll position, sub-pixel), so nothing drifts or steps
+    const ys = Math.max(0, scrollY);
+    photo.style.transform = `translate3d(0,${(ys * .34).toFixed(2)}px,0)`;
+    photo.style.opacity = (1 - clamp(ys / (vh * .85))).toFixed(3);
+    idEl.style.transform = `translate3d(0,${(ys * .2).toFixed(2)}px,0)`;
+    idEl.style.opacity = (1 - clamp(ys / (vh * .5))).toFixed(3);
     // words light up as the paragraph travels through the screen
     if (!forceLit) {
       const top = leadTop - y0;
@@ -663,7 +667,7 @@ if (!reduce) {
     const y = scrollY;
     y0 += (y - y0) * ease;
     if (Math.abs(y - y0) < .08) y0 = y;
-    if (y0 !== last) { last = y0; render(); }
+    if (y0 !== last || y !== lastY) { last = y0; lastY = y; render(); }
     requestAnimationFrame(loop);
   }
 
