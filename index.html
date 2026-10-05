@@ -40,6 +40,13 @@ svg[stroke] path,svg[stroke] circle{stroke-width:1.5}
 ::selection{background:rgba(236,230,218,.22)}
 .noscroll{overflow:hidden}
 
+/* ---------- image protection (deterrent only) ---------- */
+.photo,.photo-in,.photo-in img{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
+.photo-in img{pointer-events:none}
+.shield{position:absolute;top:0;left:0;right:0;bottom:0;z-index:2;background:transparent;-webkit-touch-callout:none}
+.photo.hide-shot .photo-in{opacity:0!important;transition:none!important}
+@media print{.photo{display:none!important}}
+
 /* smooth-scroll engine (Lenis) required css */
 html.lenis,html.lenis body{height:auto}
 .lenis:not(.lenis-autoToggle).lenis-stopped{overflow:clip}
@@ -223,7 +230,7 @@ button.soc.soon{color:var(--soft)}
 
 <main class="col">
   <section class="hero" id="hero">
-    <div class="photo" id="photo"><div class="photo-in"><img id="portrait" alt="Portrait of Sakib Al Hasan" decoding="async" /></div></div>
+    <div class="photo" id="photo"><div class="photo-in"><img id="portrait" alt="Portrait of Sakib Al Hasan" decoding="async" draggable="false" oncontextmenu="return false" /><div class="shield"></div></div></div>
 
     <div class="top">
       <button class="gb" id="open-qr" aria-label="Show QR code"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg></button>
@@ -641,6 +648,29 @@ function buildQR() {
   c.font = '400 ' + (rad * .95) + 'px "Newsreader","Iowan Old Style",Georgia,serif'; c.fillText(ini, cx, cx + rad * .06);
   box.innerHTML = ''; box.appendChild(cv); qrFor = url;
 }
+
+/* ---------- image protection (deterrent: screenshots can never be fully blocked on the web) ---------- */
+(function () {
+  const ph = document.getElementById('photo');
+  const stop = e => { e.preventDefault(); return false; };
+  ['contextmenu', 'dragstart', 'selectstart', 'copy', 'cut'].forEach(t => ph.addEventListener(t, stop));
+  document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.photo')) e.preventDefault(); });
+  document.addEventListener('keydown', e => {
+    const k = (e.key || '').toLowerCase(), m = e.ctrlKey || e.metaKey;
+    if (m && ['s', 'u', 'p'].includes(k)) e.preventDefault();
+    if (m && e.shiftKey && ['i', 'j', 'c', 's'].includes(k)) e.preventDefault();
+    if (k === 'f12') e.preventDefault();
+    if (k === 'printscreen') {
+      ph.classList.add('hide-shot');
+      try { navigator.clipboard.writeText(''); } catch (_) {}
+      setTimeout(() => ph.classList.remove('hide-shot'), 1500);
+    }
+  });
+  // hide the portrait while the tab/window is not in focus (blocks some capture tools)
+  const hideOff = () => ph.classList.add('hide-shot'), showOn = () => ph.classList.remove('hide-shot');
+  document.addEventListener('visibilitychange', () => document.hidden ? hideOff() : showOn());
+  addEventListener('blur', hideOff); addEventListener('focus', showOn);
+})();
 
 /* ---------- portrait + entrance ---------- */
 const img = $('#portrait');
