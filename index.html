@@ -67,6 +67,8 @@ html.lenis,html.lenis body{height:auto}
 .name{margin:0;font:300 clamp(50px,16vw,80px)/.94 var(--serif);letter-spacing:-.028em}
 .ln{display:block;overflow:hidden;padding:.16em 0 .1em;margin:-.16em 0 -.1em}
 .ln>span{display:block}
+.vbadge{display:inline-block;width:.42em;height:.42em;margin-left:.16em;vertical-align:.12em;flex:none}
+.vbadge svg{display:block;width:100%;height:100%}
 .facts{margin-top:22px;padding-top:15px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;font-size:13.5px;color:var(--mu)}
 .facts .role{color:rgba(236,230,218,.9)}
 .facts .where{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
@@ -119,7 +121,7 @@ html.lenis,html.lenis body{height:auto}
 .site-h small{display:block;margin-top:4px;font-size:13px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .live{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--soft)}
 .site-h:active{opacity:.7}
-.socs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.socs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
 .soc{width:100%;height:50px;border-radius:16px;display:grid;place-items:center;border:1px solid var(--line);background:var(--fill);transition:background .6s var(--ease),transform .6s var(--ease)}
 button.soc.soon{color:var(--soft)}
 .soc svg{width:20px;height:20px}
@@ -320,10 +322,14 @@ const CONFIG = {
   websites: [
     { name: "Aesthetic Lifestyle Touch", url: "https://aestheticlifestyletouch.netlify.app/home", status: "Live",
       desc: "Viral product store",
-      /* icon only for now: add  url: "https://..."  to any line and it becomes a real link */
+      /* each icon opens its own link */
       socials: [
-        { icon: "instagram" }, { icon: "facebook" }, { icon: "tiktok" }, { icon: "youtube" }, { icon: "whatsapp" },
-        { icon: "telegram" },  { icon: "x" },        { icon: "threads" }, { icon: "pinterest" }, { icon: "snapchat" }
+        { icon: "instagram", url: "https://www.instagram.com/aestheticlifestyletouch/?hl=en" },
+        { icon: "facebook",  url: "https://www.facebook.com/profile.php?id=61582779082620" },
+        { icon: "tiktok",    url: "https://www.tiktok.com/@aestheticlifestyletouch" },
+        { icon: "youtube",   url: "https://www.youtube.com/@AestheticLifestyleTouch" },
+        { icon: "linkedin",  url: "https://www.linkedin.com/in/aesthetic-lifestyle-touch/" },
+        { icon: "pinterest", url: "https://www.pinterest.com/aestheticlifestyletouch/" }
       ] }
   ]
 };
@@ -361,6 +367,11 @@ const nameEl = $('#name');
 nameEl.setAttribute('aria-label', CONFIG.fullName);
 const line = t => { const l = el('span', 'ln'); l.setAttribute('aria-hidden', 'true'); l.appendChild(el('span', '', t)); return l; };
 nameEl.append(line(first)); if (rest) nameEl.append(line(rest));
+/* verified tick next to the name */
+{ const last = nameEl.lastElementChild.firstElementChild, vb = el('i', 'vbadge');
+  vb.setAttribute('role', 'img'); vb.setAttribute('aria-label', 'Verified');
+  vb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ECE6DA" d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34z"/><path fill="none" stroke="#141311" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="M7.6 12.4l3 3 5.8-6.2"/></svg>';
+  last.appendChild(vb); }
 $('#role').textContent = CONFIG.profession || '';
 CONFIG.location ? ($('#where-t').textContent = CONFIG.location) : ($('#where').hidden = true);
 $('#sig').textContent = CONFIG.fullName;
