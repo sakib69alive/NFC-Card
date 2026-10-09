@@ -165,6 +165,7 @@ button.soc.soon{color:var(--soft)}
 .foot{padding:13vh 24px calc(env(safe-area-inset-bottom,0px) + 44px);padding-top:13svh;text-align:center;color:var(--dim);font-size:12.5px}
 .sig{display:inline-block;margin:0 0 6px;padding:6px 14px;font:italic 300 24px/1.2 var(--serif);color:var(--mu)}
 .foot p{margin:0}
+.foot .copy{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);max-width:320px;margin-left:auto;margin-right:auto;font-size:11.5px;line-height:1.6;letter-spacing:.02em;color:var(--dim)}
 
 /* ---------- sheets (no blur, solid scrim) ---------- */
 .ov{position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.86);
@@ -264,6 +265,7 @@ button.soc.soon{color:var(--soft)}
   <footer class="foot">
     <button class="sig" id="sig" aria-label="Back to top"></button>
     <p id="crafted"></p>
+    <p class="copy" id="copy"></p>
   </footer>
 </main>
 
@@ -318,8 +320,7 @@ const CONFIG = {
     { icon: "facebook",  title: "Facebook",  sub: "@SAKIB69alive",   url: "https://www.facebook.com/SAKIB69alive" },
     { icon: "x",         title: "X",         sub: "@AlhananSakib",   url: "https://x.com/AlhananSakib" },
     { icon: "threads",   title: "Threads",   sub: "@sakib69alive",   url: "https://www.threads.com/@sakib69alive" },
-    { icon: "telegram",  title: "Telegram",  sub: "@sakib69alive",   url: "https://t.me/sakib69alive" },
-    { icon: "discord",   title: "Discord",   sub: "sakib_al_hasan.", copy: "sakib_al_hasan." },
+    { icon: "telegram",  title: "Telegram",  sub: "@sakib69alive",   url: "https://t.me/sakib69alive" },    { icon: "discord",   title: "Discord",   sub: "sakib_al_hasan.", copy: "sakib_al_hasan." },
     { icon: "steam",     title: "Steam",     sub: "Add as friend",   url: "steam://friends/add/765611997316413067" }
   ],
 
@@ -394,7 +395,8 @@ nameEl.append(line(first)); if (rest) nameEl.append(line(rest));
 $('#role').textContent = CONFIG.profession || '';
 CONFIG.location ? ($('#where-t').textContent = CONFIG.location) : ($('#where').hidden = true);
 $('#sig').textContent = CONFIG.fullName;
-$('#crafted').textContent = 'Crafted in ' + (CONFIG.location || 'Earth') + ', ' + new Date().getFullYear();
+$('#crafted').textContent = 'Digital Business Card';
+$('#copy').textContent = '© ' + new Date().getFullYear() + ' ' + CONFIG.fullName + '. All rights reserved.';
 $('#a-call').href = 'tel:' + CONFIG.phone;
 $('#a-wa').href = 'https://wa.me/' + CONFIG.whatsapp;
 $('#a-mail').href = 'mailto:' + CONFIG.email;
