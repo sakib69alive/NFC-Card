@@ -295,7 +295,7 @@ button.soc.soon{color:var(--soft)}
 <script>
 const CONFIG = {
   fullName: "Sakib Al Hasan",
-  profession: "Student & Entrepreneur",
+  profession: "Student & Tech Enthusiast",
   location: "Bangladesh",
   timezone: "Asia/Dhaka",     // live local time next to the status
   status: "Available",        // status text (leave empty to hide it)
@@ -306,7 +306,7 @@ const CONFIG = {
   phone: "+8801313667726",
   whatsapp: "8801313667726",
   email: "sakib69alive@gmail.com",
-  vcardNote: "Met via Digital Profile",
+  vcardNote: "",                // optional note saved with the contact (empty = none)
 
   /* the first tab opens by default.
      essence  = your own words + save/call/whatsapp/email buttons + your social links (links below)
@@ -552,13 +552,12 @@ ab.addEventListener('touchend', e => {
 const esc = s => String(s).replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
 function saveContact() {
   const p = CONFIG.fullName.trim().split(/\s+/);
-  const given = p[0], family = p.length > 1 ? p[p.length - 1] : '', mid = p.slice(1, -1).join(' ');
-  const v = ['BEGIN:VCARD', 'VERSION:3.0', 'FN:' + esc(CONFIG.fullName), `N:${esc(family)};${esc(given)};${esc(mid)};;`,
+  const given = p[0], family = p.slice(1).join(' ');
+  const v = ['BEGIN:VCARD', 'VERSION:3.0', 'FN:' + esc(CONFIG.fullName), `N:${esc(family)};${esc(given)};;;`,
     CONFIG.profession && 'TITLE:' + esc(CONFIG.profession),
     CONFIG.phone && 'TEL;TYPE=CELL:' + CONFIG.phone,
     CONFIG.email && 'EMAIL;TYPE=INTERNET:' + CONFIG.email,
-    ...CONFIG.links.filter(l => isWeb(l.url)).map(l => 'URL:' + l.url),
-    ...(CONFIG.websites || []).filter(s => isWeb(s.url)).map(s => 'URL:' + s.url),
+    CONFIG.location && 'ADR;TYPE=HOME:;;;;;;' + esc(CONFIG.location),
     CONFIG.vcardNote && 'NOTE:' + esc(CONFIG.vcardNote), 'END:VCARD'].filter(Boolean).join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([v], { type: 'text/vcard;charset=utf-8' }));
