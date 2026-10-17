@@ -116,14 +116,12 @@ html.lenis,html.lenis body{height:auto}
 .row small{display:block;margin-top:4px;font-size:13px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .go{margin-left:auto;flex:none;width:20px;height:20px;color:var(--mu);transition:color .6s var(--ease),transform .8s var(--ease)}
 .row:active{background:var(--fill2)}
-.rows{transform:translateZ(0)}
 @media (hover:none){.row{transition:none}}
 button.row{width:100%;text-align:left;color:inherit}
-.more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .95s var(--ease)}
-.more.open{grid-template-rows:1fr}
-.more-in{min-height:0;overflow:hidden}
-.more-in>.row{border-top:1px solid var(--line);opacity:0;transform:translateY(-10px);transition:opacity .45s var(--ease),transform .6s var(--ease)}
-.more.open .more-in>.row{opacity:1;transform:none;transition:opacity .7s var(--ease) calc(var(--i)*55ms + 160ms),transform .9s var(--ease) calc(var(--i)*55ms + 160ms)}
+.more{height:0;overflow:hidden;contain:layout paint}
+.more.open{height:auto}
+.more-in>.row{border-top:1px solid var(--line);opacity:0;transform:translateY(-10px);transition:opacity .25s linear,transform .3s var(--ease)}
+.more.open .more-in>.row{opacity:1;transform:none;transition:opacity .5s var(--ease) calc(var(--i)*40ms + 90ms),transform .6s var(--ease) calc(var(--i)*40ms + 90ms)}
 .more-btn{border-top:1px solid var(--line)}
 .more-btn .ic svg{transition:transform .8s var(--ease)}
 .more-btn .go{transition:transform .8s var(--ease),color .6s var(--ease)}
@@ -448,6 +446,7 @@ function copyText(v, msg) {
 }
 
 /* ---------- tab content builders ---------- */
+const reduceMotion = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
 function buildLinks() {
   const rows = el('div', 'rows');
   const mk = l => {
@@ -475,7 +474,18 @@ function buildLinks() {
     text(false);
     btn.onclick = () => {
       const open = !more.classList.contains('open');
-      more.classList.toggle('open', open);
+      if (!reduceMotion()) {
+        more.getAnimations().forEach(x => x.cancel());
+        if (open) {
+          more.classList.add('open');
+          const h = more.scrollHeight;
+          more.animate([{ height: '0px' }, { height: h + 'px' }], { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)' });
+        } else {
+          const h = more.offsetHeight;
+          more.classList.remove('open');
+          more.animate([{ height: h + 'px' }, { height: '0px' }], { duration: 460, easing: 'cubic-bezier(.4,0,.2,1)' });
+        }
+      } else more.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', open);
       open ? inner.removeAttribute('inert') : inner.setAttribute('inert', '');
       text(open);
