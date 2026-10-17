@@ -116,6 +116,19 @@ html.lenis,html.lenis body{height:auto}
 .row small{display:block;margin-top:4px;font-size:13px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .go{margin-left:auto;flex:none;width:20px;height:20px;color:var(--mu);transition:color .6s var(--ease),transform .8s var(--ease)}
 .row:active{background:var(--fill2)}
+.rows{transform:translateZ(0)}
+@media (hover:none){.row{transition:none}}
+button.row{width:100%;text-align:left;color:inherit}
+.more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .95s var(--ease)}
+.more.open{grid-template-rows:1fr}
+.more-in{min-height:0;overflow:hidden}
+.more-in>.row{border-top:1px solid var(--line);opacity:0;transform:translateY(-10px);transition:opacity .45s var(--ease),transform .6s var(--ease)}
+.more.open .more-in>.row{opacity:1;transform:none;transition:opacity .7s var(--ease) calc(var(--i)*55ms + 160ms),transform .9s var(--ease) calc(var(--i)*55ms + 160ms)}
+.more-btn{border-top:1px solid var(--line)}
+.more-btn .ic svg{transition:transform .8s var(--ease)}
+.more-btn .go{transition:transform .8s var(--ease),color .6s var(--ease)}
+.more-btn[aria-expanded=true] .go{transform:rotate(180deg);color:var(--ink)}
+.more-btn[aria-expanded=true] .ic svg{transform:rotate(135deg)}
 
 /* business: quotes + websites */
 .quotes{border-top:1px solid var(--line)}
@@ -224,6 +237,7 @@ button.soc.soon{color:var(--soft)}
   .js .gb{opacity:1}
   .status i::after{animation:none}
   .stack.anim .panel.on{animation:none}
+  .more,.more-in>.row,.more-btn .ic svg,.more-btn .go{transition:none!important}
   *{transition-duration:.01ms!important;transition-delay:0s!important}
 }
 </style>
@@ -317,18 +331,20 @@ const CONFIG = {
   ],
 
   /* STUDENT tab. url = opens | copy = tap to copy | sub = small text under the title */
+  linksVisible: 4,            // how many show before the "More" button
   links: [
     { icon: "instagram", title: "Instagram", sub: "@sakib69alive",   url: "https://www.instagram.com/sakib69alive/" },
     { icon: "facebook",  title: "Facebook",  sub: "@SAKIB69alive",   url: "https://www.facebook.com/SAKIB69alive" },
+    { icon: "linkedin",  title: "LinkedIn",  sub: "@sakib69alive",   url: "https://www.linkedin.com/in/sakib69alive/" },
     { icon: "x",         title: "X",         sub: "@AlhananSakib",   url: "https://x.com/AlhananSakib" },
     { icon: "threads",   title: "Threads",   sub: "@sakib69alive",   url: "https://www.threads.com/@sakib69alive" },
-    { icon: "linkedin",  title: "LinkedIn",  sub: "@sakib69alive",   url: "https://www.linkedin.com/in/sakib69alive/" },
     { icon: "github",    title: "GitHub",    sub: "@sakib69alive",   url: "https://github.com/sakib69alive" },
     { icon: "pinterest", title: "Pinterest", sub: "@sakib69alive",   url: "https://www.pinterest.com/sakib69alive/" },
     { icon: "snapchat",  title: "Snapchat",  sub: "sakib18rip",     url: "https://www.snapchat.com/add/sakib18rip" },
     { icon: "reddit",    title: "Reddit",    sub: "u/Sakib69alive_", url: "https://www.reddit.com/user/Sakib69alive_/" },
     { icon: "epic",      title: "Epic Games", sub: "sakib69alive.",  copy: "sakib69alive." },
-    { icon: "telegram",  title: "Telegram",  sub: "@sakib69alive",   url: "https://t.me/sakib69alive" },    { icon: "discord",   title: "Discord",   sub: "sakib_al_hasan.", copy: "sakib_al_hasan." },
+    { icon: "telegram",  title: "Telegram",  sub: "@sakib69alive",   url: "https://t.me/sakib69alive" },
+    { icon: "discord",   title: "Discord",   sub: "sakib_al_hasan.", copy: "sakib_al_hasan." },
     { icon: "kakao",     title: "KakaoTalk",        sub: "sakib69alive",  url: "https://qr.kakao.com/talk/H.C6xJL1UTwxvgd4PEy9oobbFIY-" },
     { icon: "steam",     title: "Steam",     sub: "Add as friend",   url: "steam://friends/add/765611997316413067" }
   ],
@@ -434,16 +450,38 @@ function copyText(v, msg) {
 /* ---------- tab content builders ---------- */
 function buildLinks() {
   const rows = el('div', 'rows');
-  CONFIG.links.forEach(l => {
+  const mk = l => {
     const a = el('a', 'row');
     a.href = l.url || '#';
     if (isWeb(l.url)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-    a.innerHTML = `<span class="ic">${ICONS[l.icon] || ICONS.link}</span><span class="tx"><b></b><small></small></span><span class="go">${l.copy ? ICONS.copy : ICONS.arrow}</span>`;
-    a.querySelector('b').textContent = l.title;
-    a.querySelector('small').remove(); // usernames stay hidden (kept in CONFIG as 'sub')
-    if (l.copy) { a.setAttribute('role', 'button'); a.onclick = e => { e.preventDefault(); copyText(l.copy, l.title + ' ID copied'); if (l.open) setTimeout(() => { location.href = l.open; }, 700); }; }
-    rows.appendChild(a);
-  });
+    a.innerHTML = `<span class="ic">${ICONS[l.icon] || ICONS.link}</span><span class="tx"><b></b></span><span class="go">${l.copy ? ICONS.copy : ICONS.arrow}</span>`;
+    a.querySelector('b').textContent = l.title; // usernames stay hidden (kept in CONFIG as 'sub')
+    if (l.copy) { a.setAttribute('role', 'button'); a.onclick = e => { e.preventDefault(); copyText(l.copy, l.title + ' ID copied'); }; }
+    return a;
+  };
+  const n = Math.max(1, CONFIG.linksVisible || 4);
+  CONFIG.links.slice(0, n).forEach(l => rows.appendChild(mk(l)));
+  const rest = CONFIG.links.slice(n);
+  if (rest.length) {
+    const more = el('div', 'more'), inner = el('div', 'more-in');
+    more.id = 'more-links'; inner.setAttribute('inert', '');
+    rest.forEach((l, i) => { const r = mk(l); r.style.setProperty('--i', i); inner.appendChild(r); });
+    more.appendChild(inner);
+    const btn = el('button', 'row more-btn'); btn.type = 'button';
+    btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'more-links');
+    btn.innerHTML = '<span class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="tx"><b></b></span><span class="go"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>';
+    const lab = btn.querySelector('b');
+    const text = open => { lab.textContent = open ? 'Show less' : 'More (' + rest.length + ')'; };
+    text(false);
+    btn.onclick = () => {
+      const open = !more.classList.contains('open');
+      more.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+      open ? inner.removeAttribute('inert') : inner.setAttribute('inert', '');
+      text(open);
+    };
+    rows.append(more, btn);
+  }
   const g = el('div', 'grp'); g.append(el('p', 'lbl', 'Find me on'), rows); return g;
 }
 function buildQuotes() {
