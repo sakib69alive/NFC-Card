@@ -71,13 +71,15 @@ html.lenis,html.lenis body{height:auto}
 .gb:active{transform:scale(.92);background:rgba(40,39,36,.95)}
 
 .id{position:absolute;z-index:3;left:24px;right:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);will-change:transform,opacity}
-.name{margin:0;font:300 clamp(50px,16vw,80px)/.94 var(--serif);letter-spacing:-.028em}
+.name{margin:0;font:400 clamp(46px,14vw,66px)/.96 var(--serif);letter-spacing:-.02em}
+.ln>span{-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;background-image:linear-gradient(180deg,#FBF8F0 20%,#CFC9BB 100%)}
+.ln:nth-child(2)>span{background-image:linear-gradient(180deg,#D9D3C5 10%,#A9A395 100%)}
 .ln{display:block;overflow:hidden;padding:.16em 0 .1em;margin:-.16em 0 -.1em}
 .ln>span{display:block}
 .vbadge{display:inline-block;width:.42em;height:.42em;margin-left:.16em;vertical-align:.12em;flex:none}
 .vbadge svg{display:block;width:100%;height:100%}
-.facts{margin-top:22px;padding-top:15px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;font-size:13.5px;color:var(--mu)}
-.facts .role{color:rgba(236,230,218,.9)}
+.facts{margin-top:18px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-size:13.5px;color:var(--mu)}
+.facts .role{font-size:15px;font-weight:500;letter-spacing:.01em;color:#BEB8AC}
 .facts .where{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .facts .where svg{width:15px;height:15px}
 .status{margin:14px 0 0;display:inline-flex;align-items:center;gap:9px;height:36px;padding:0 15px 0 13px;border-radius:999px;white-space:nowrap;
