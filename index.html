@@ -322,6 +322,12 @@ const CONFIG = {
     { icon: "facebook",  title: "Facebook",  sub: "@SAKIB69alive",   url: "https://www.facebook.com/SAKIB69alive" },
     { icon: "x",         title: "X",         sub: "@AlhananSakib",   url: "https://x.com/AlhananSakib" },
     { icon: "threads",   title: "Threads",   sub: "@sakib69alive",   url: "https://www.threads.com/@sakib69alive" },
+    { icon: "linkedin",  title: "LinkedIn",  sub: "@sakib69alive",   url: "https://www.linkedin.com/in/sakib69alive/" },
+    { icon: "github",    title: "GitHub",    sub: "@sakib69alive",   url: "https://github.com/sakib69alive" },
+    { icon: "pinterest", title: "Pinterest", sub: "@sakib69alive",   url: "https://www.pinterest.com/sakib69alive/" },
+    { icon: "snapchat",  title: "Snapchat",  sub: "sakib18rip",     url: "https://www.snapchat.com/add/sakib18rip" },
+    { icon: "reddit",    title: "Reddit",    sub: "u/Sakib69alive_", url: "https://www.reddit.com/user/Sakib69alive_/" },
+    { icon: "epic",      title: "Epic Games", sub: "sakib69alive.",  copy: "sakib69alive." },
     { icon: "telegram",  title: "Telegram",  sub: "@sakib69alive",   url: "https://t.me/sakib69alive" },    { icon: "discord",   title: "Discord",   sub: "sakib_al_hasan.", copy: "sakib_al_hasan." },
     { icon: "steam",     title: "Steam",     sub: "Add as friend",   url: "steam://friends/add/765611997316413067" }
   ],
@@ -433,7 +439,7 @@ function buildLinks() {
     if (isWeb(l.url)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
     a.innerHTML = `<span class="ic">${ICONS[l.icon] || ICONS.link}</span><span class="tx"><b></b><small></small></span><span class="go">${l.copy ? ICONS.copy : ICONS.arrow}</span>`;
     a.querySelector('b').textContent = l.title;
-    a.querySelector('small').textContent = l.sub || '';
+    a.querySelector('small').remove(); // usernames stay hidden (kept in CONFIG as 'sub')
     if (l.copy) { a.setAttribute('role', 'button'); a.onclick = e => { e.preventDefault(); copyText(l.copy, l.title + ' username copied'); }; }
     rows.appendChild(a);
   });
